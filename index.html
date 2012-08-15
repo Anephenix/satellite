@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Satellite by paulbjensen</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Satellite</h1>
+        <p>Extensions for node-http-proxy</p>
+
+        <p class="view"><a href="https://github.com/paulbjensen/satellite">View the Project on GitHub <small>paulbjensen/satellite</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/paulbjensen/satellite/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/paulbjensen/satellite/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/paulbjensen/satellite">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>Satellite</h1>
+
+<p>Extensions for Nodejitsu's node-http-proxy library.</p>
+
+<h2>What is it for?</h2>
+
+<p>Satellite uses Nodejitsu's <a href="https://github.com/nodejitsu/node-http-proxy">node-http-proxy</a> to help with:</p>
+
+<ul>
+<li>Load-balancing requests across multiple servers via a round-robin strategy.</li>
+<li>Supporting sticky sessions by routing requests to specific servers.</li>
+</ul><p>And in the future...</p>
+
+<ul>
+<li>Being able to add or remove servers from the proxy list on-the-fly.</li>
+<li>Running the proxy server over multiple CPU cores using Node.js' cluster API.</li>
+</ul><h2>Installation</h2>
+
+<pre><code>npm install satellite
+</code></pre>
+
+<h2>Usage (round-robin)</h2>
+
+<p>Let's say you have an application which has multiple instances running on different servers, 
+and you want to setup a proxy server to load-balance requests across those servers. </p>
+
+<p>Satellite provides a round-robin strategy that you can apply to your existing proxy server code:</p>
+
+<div class="highlight"><pre>    <span class="c1">// This example demonstrates proxying requests between</span>
+    <span class="c1">// 2 servers</span>
+    <span class="kd">var</span> <span class="nx">httpProxy</span>   <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'http-proxy'</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">satellite</span>   <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'satellite'</span><span class="p">);</span>
+
+    <span class="c1">// Add 2 different servers to the proxy list</span>
+    <span class="nx">satellite</span><span class="p">.</span><span class="nx">addAddress</span><span class="p">({</span><span class="nx">host</span><span class="o">:</span> <span class="s1">'111.11.111.111'</span><span class="p">,</span> <span class="nx">port</span><span class="o">:</span> <span class="mi">80</span><span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">){});</span>
+    <span class="nx">satellite</span><span class="p">.</span><span class="nx">addAddress</span><span class="p">({</span><span class="nx">host</span><span class="o">:</span> <span class="s1">'222.22.222.222'</span><span class="p">,</span> <span class="nx">port</span><span class="o">:</span> <span class="mi">80</span><span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">){});</span>
+
+    <span class="kd">var</span> <span class="nx">proxyServer</span> <span class="o">=</span> <span class="nx">httpProxy</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span>
+
+      <span class="c1">// tell the proxy serve to use a connect-compatible </span>
+      <span class="c1">// middleware that provides round-robin support.</span>
+      <span class="nx">satellite</span><span class="p">.</span><span class="nx">roundRobinStrategy</span><span class="p">,</span>
+
+      <span class="kd">function</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="nx">res</span><span class="p">,</span> <span class="nx">proxy</span><span class="p">){</span>
+
+        <span class="c1">// tell proxyRequest to use the target address</span>
+        <span class="c1">// determined by satellite, which will be one</span>
+        <span class="c1">// of the 2 servers.</span>
+        <span class="nx">satellite</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">targetAddress</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span><span class="nx">targetAddress</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">proxy</span><span class="p">.</span><span class="nx">proxyRequest</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">targetAddress</span><span class="p">);</span>
+        <span class="p">});</span>
+
+      <span class="p">}</span>
+    <span class="p">).</span><span class="nx">listen</span><span class="p">(</span><span class="mi">80</span><span class="p">);</span>
+</pre></div>
+
+<p>Your proxy server will now distribute requests to the servers in a round-robin fashion.</p>
+
+<h2>Usage (sticky-session support)</h2>
+
+<p>Some application setups require sticky-session support. </p>
+
+<p>For more info on sticky sessions and why you would use them, 
+see the explanation provided in the Readme on <a href="https://github.com/sockjs/sockjs-node#sticky-sessions">SockJS' github repository</a>.</p>
+
+<p>To enable sticky session support in your proxy server, you can do this:</p>
+
+<div class="highlight"><pre>    <span class="c1">// This example demonstrates using sticky session</span>
+    <span class="c1">// support</span>
+    <span class="kd">var</span> <span class="nx">httpProxy</span>   <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'http-proxy'</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">satellite</span>   <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'satellite'</span><span class="p">);</span>
+
+    <span class="c1">// Add 2 different servers to the proxy list</span>
+    <span class="nx">satellite</span><span class="p">.</span><span class="nx">addAddress</span><span class="p">({</span><span class="nx">host</span><span class="o">:</span> <span class="s1">'111.11.111.111'</span><span class="p">,</span> <span class="nx">port</span><span class="o">:</span> <span class="mi">80</span><span class="p">});</span>
+    <span class="nx">satellite</span><span class="p">.</span><span class="nx">addAddress</span><span class="p">({</span><span class="nx">host</span><span class="o">:</span> <span class="s1">'222.22.222.222'</span><span class="p">,</span> <span class="nx">port</span><span class="o">:</span> <span class="mi">80</span><span class="p">});</span>
+
+    <span class="kd">var</span> <span class="nx">proxyServer</span> <span class="o">=</span> <span class="nx">httpProxy</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span>
+
+      <span class="c1">// tell the proxy server to use sticky-session support. </span>
+      <span class="nx">satellite</span><span class="p">.</span><span class="nx">stickySessionStrategy</span><span class="p">,</span>
+
+      <span class="kd">function</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="nx">res</span><span class="p">,</span> <span class="nx">proxy</span><span class="p">){</span>
+        <span class="nx">satellite</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">targetAddress</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span><span class="nx">targetAddress</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">proxy</span><span class="p">.</span><span class="nx">proxyRequest</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">targetAddress</span><span class="p">);</span>
+        <span class="p">});</span>
+      <span class="p">}</span>
+    <span class="p">).</span><span class="nx">listen</span><span class="p">(</span><span class="mi">80</span><span class="p">);</span>
+</pre></div>
+
+<p><strong>NOTE:</strong> If you wish to use both round-robin and sticky-session support 
+in your application, make sure that you call the sticky-session middleware
+after you have called the round-robin middleware, like this:</p>
+
+<div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">proxyServer</span> <span class="o">=</span> <span class="nx">httpProxy</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span>
+      <span class="nx">satellite</span><span class="p">.</span><span class="nx">roundRobinStrategy</span><span class="p">,</span>
+      <span class="nx">satellite</span><span class="p">.</span><span class="nx">stickySessionStrategy</span><span class="p">,</span>
+</pre></div>
+
+<h2>Redis store</h2>
+
+<p>At the moment, there is a Redis store option in active development (in order to support use of Node.js's cluster API with satellite). There is a hanging request issue which I am yet to resolve, so I will keep working at this until it is fixed.</p>
+
+<h2>Dependencies</h2>
+
+<p>Satellite was built against Node.js v0.6.17, and has it's engine set against that version.</p>
+
+<p>It may be able to run on previous versions of Node.js, but you'll need to git clone a copy and modify the package.json to do so.</p>
+
+<p>Because there is also a Redis store in development, Redis is an optional dependency.</p>
+
+<h2>License</h2>
+
+<p>MIT</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/paulbjensen">paulbjensen</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
