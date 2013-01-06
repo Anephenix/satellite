@@ -1,6 +1,8 @@
 Satellite
 =========
 
+[![Build Status](https://travis-ci.org/Anephenix/satellite.png?branch=master)](https://travis-ci.org/Anephenix/satellite)
+
 Extensions for Nodejitsu's node-http-proxy library.
 
 What is it for?
