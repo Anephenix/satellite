@@ -122,3 +122,5 @@ License
 ---
 
 MIT
+
+&copy 2013 Anephenix Ltd.

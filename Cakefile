@@ -33,7 +33,8 @@ test = (callback) ->
   Mocha = new mocha
   for file in files
     Mocha.addFile "test/#{file.replace('.coffee','_test.coffee')}"
-  Mocha.run()
+  Mocha.run (result) ->
+    callback result if callback?
 
 task 'build', 'Compiles source files in src directory, and outputs to the lib directory', ->
   build()
@@ -45,4 +46,4 @@ task 'watch', 'Recompile CoffeeScript source files when modified', ->
   build true
 
 task 'test', 'Run mocha specs', ->
-  test()
+  test process.exit
