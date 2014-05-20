@@ -1,6 +1,12 @@
+################
+# Dependencies #
+################
+
 assert    = require 'assert'
 connect   = require 'connect'
 satellite = require '../../../src/satellite'
+
+
 
 describe 'sticky-session strategy', ->
 
@@ -8,7 +14,9 @@ describe 'sticky-session strategy', ->
     @res = {}
     @app = connect() 
     @app.use satellite.stickySessionStrategy
-    done()
+    address = host: '111.11.111.111', port: 80
+    satellite.store.addresses.add address, (res) ->
+      done()
 
   describe 'when session id is not present', ->
 

@@ -1,38 +1,294 @@
-<!DOCTYPE html>  <html> <head>   <title>default.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               default.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">memory = </span>
-  <span class="nv">addresses: </span><span class="p">[]</span>
-  <span class="nv">targetAddress: </span><span class="kc">null</span>
-  <span class="nv">roundRobin:</span>
-    <span class="nv">targetAddressIndex: </span><span class="mi">0</span>
-  <span class="nv">stickySessions:</span>
-    <span class="nv">sessions: </span><span class="p">{}</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>The addresses store API functions</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">exports.addresses =</span>
-  </pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>add an address to the list</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">add: </span><span class="p">(</span><span class="nx">address</span><span class="p">,</span> <span class="nx">cb</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nx">memory</span><span class="p">.</span><span class="nx">addresses</span><span class="p">.</span><span class="nx">push</span> <span class="nx">address</span>
-    <span class="nx">cb</span> <span class="s">&#39;success&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>add an address from the list</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">remove: </span><span class="p">(</span><span class="nx">address</span><span class="p">,</span> <span class="nx">cb</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nv">index = </span><span class="nx">memory</span><span class="p">.</span><span class="nx">addresses</span><span class="p">.</span><span class="nx">indexOf</span> <span class="nx">address</span>
-    <span class="nx">memory</span><span class="p">.</span><span class="nx">addresses</span><span class="p">.</span><span class="nx">splice</span> <span class="nx">index</span><span class="p">,</span> <span class="mi">1</span>
-    <span class="nx">cb</span> <span class="s">&#39;success&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>get the list</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">get: </span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nx">cb</span> <span class="nx">memory</span><span class="p">.</span><span class="nx">addresses</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>get or set the target Address</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">exports.targetAddress =</span>
-  </pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Get the current address</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">get: </span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nx">cb</span> <span class="nx">memory</span><span class="p">.</span><span class="nx">targetAddress</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Set the current address</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">set: </span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">cb</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nv">memory.targetAddress = </span><span class="nx">value</span>
-    <span class="nx">cb</span> <span class="nx">value</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>the round robin target address index API</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">exports.targetAddressIndex = </span> 
-  </pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>get the target address index</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">get: </span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nx">cb</span> <span class="nx">memory</span><span class="p">.</span><span class="nx">roundRobin</span><span class="p">.</span><span class="nx">targetAddressIndex</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>increase the target address index by 1</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">increment: </span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nx">memory</span><span class="p">.</span><span class="nx">roundRobin</span><span class="p">.</span><span class="nx">targetAddressIndex</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="nx">cb</span> <span class="s">&#39;success&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>set the target address index to 0</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">reset: </span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nv">memory.roundRobin.targetAddressIndex = </span><span class="mi">0</span>
-    <span class="nx">cb</span> <span class="s">&#39;success&#39;</span>
-  </pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>the sticky sessions API    </p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">exports.stickySessions =</span>
-    </pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>get all the sticky sessions, or just one</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">get: </span><span class="p">(</span><span class="nx">keyOrCb</span><span class="p">,</span> <span class="nx">cb</span><span class="o">=</span><span class="kc">null</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nv">items = </span><span class="nx">memory</span><span class="p">.</span><span class="nx">stickySessions</span><span class="p">.</span><span class="nx">sessions</span>
-    <span class="k">if</span> <span class="nx">cb</span> <span class="o">is</span> <span class="kc">null</span>
-      <span class="nx">keyOrCb</span> <span class="nx">items</span>
-    <span class="k">else</span>
-      <span class="nx">cb</span> <span class="nx">items</span><span class="p">[</span><span class="nx">keyOrCb</span><span class="p">]</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>set a sticky session by its key and value</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">set: </span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nx">memory</span><span class="p">.</span><span class="nx">stickySessions</span><span class="p">.</span><span class="nx">sessions</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span>
-    <span class="nx">response</span> <span class="s">&#39;success&#39;</span>
-  </pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>remove a sticky session</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">delete</span><span class="o">:</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">cb</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="k">delete</span> <span class="nx">memory</span><span class="p">.</span><span class="nx">stickySessions</span><span class="p">.</span><span class="nx">sessions</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
-    <span class="nx">cb</span> <span class="s">&#39;success&#39;</span>
+<!DOCTYPE html>
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+<html>
+<head>
+  <title>default.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>default.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>memory = 
+  <span class="hljs-attribute">addresses</span>: []
+  <span class="hljs-attribute">targetAddress</span>: <span class="hljs-literal">null</span>
+  <span class="hljs-attribute">roundRobin</span>:
+    <span class="hljs-attribute">targetAddressIndex</span>: <span class="hljs-number">0</span>
+  <span class="hljs-attribute">stickySessions</span>:
+    <span class="hljs-attribute">sessions</span>: {}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>The addresses store API functions</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">exports</span>.addresses =</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>add an address to the list</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">add</span>: <span class="hljs-function"><span class="hljs-params">(address, cb)</span> =&gt;</span>
+    memory.addresses.push address
+    cb <span class="hljs-string">'success'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>add an address from the list</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">remove</span>: <span class="hljs-function"><span class="hljs-params">(address, cb)</span> =&gt;</span>
+    index = memory.addresses.indexOf address
+    memory.addresses.splice index, <span class="hljs-number">1</span>
+    cb <span class="hljs-string">'success'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>get the list</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">get</span>: <span class="hljs-function"><span class="hljs-params">(cb)</span> =&gt;</span>
+    cb memory.addresses</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>get or set the target Address</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">exports</span>.targetAddress =</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Get the current address</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">get</span>: <span class="hljs-function"><span class="hljs-params">(cb)</span> =&gt;</span>
+    cb memory.targetAddress</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Set the current address</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">set</span>: <span class="hljs-function"><span class="hljs-params">(value, cb)</span> =&gt;</span>
+    memory.targetAddress = value
+    cb value</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>the round robin target address index API</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">exports</span>.targetAddressIndex =</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>get the target address index</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">get</span>: <span class="hljs-function"><span class="hljs-params">(cb)</span> =&gt;</span>
+    cb memory.roundRobin.targetAddressIndex</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>increase the target address index by 1</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">increment</span>: <span class="hljs-function"><span class="hljs-params">(cb)</span> =&gt;</span>
+    memory.roundRobin.targetAddressIndex += <span class="hljs-number">1</span>
+    cb <span class="hljs-string">'success'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>set the target address index to 0</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">reset</span>: <span class="hljs-function"><span class="hljs-params">(cb)</span> =&gt;</span>
+    memory.roundRobin.targetAddressIndex = <span class="hljs-number">0</span>
+    cb <span class="hljs-string">'success'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>the sticky sessions API    </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">exports</span>.stickySessions =</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>get all the sticky sessions, or just one</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">get</span>: <span class="hljs-function"><span class="hljs-params">(keyOrCb, cb=<span class="hljs-literal">null</span>)</span> =&gt;</span>
+    items = memory.stickySessions.sessions
+    <span class="hljs-keyword">if</span> cb <span class="hljs-keyword">is</span> <span class="hljs-literal">null</span>
+      keyOrCb items
+    <span class="hljs-keyword">else</span>
+      cb items[keyOrCb]</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>set a sticky session by its key and value</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">set</span>: <span class="hljs-function"><span class="hljs-params">(key, value, response)</span> =&gt;</span>
+    memory.stickySessions.sessions[key] = value
+    response <span class="hljs-string">'success'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>remove a sticky session</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">delete</span>: <span class="hljs-function"><span class="hljs-params">(key, cb)</span> =&gt;</span>
+    <span class="hljs-keyword">delete</span> memory.stickySessions.sessions[key]
+    cb <span class="hljs-string">'success'</span></pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

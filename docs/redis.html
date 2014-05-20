@@ -1,61 +1,303 @@
-<!DOCTYPE html>  <html> <head>   <title>redis.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               redis.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>The addresses store API functions</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">exports.addresses =</span>
-  </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>add an address to the list</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">add: </span><span class="p">(</span><span class="nx">address</span><span class="p">,</span> <span class="nx">cb</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nv">key = </span><span class="s">&quot;</span><span class="si">#{</span><span class="nx">address</span><span class="p">.</span><span class="nx">host</span><span class="si">}</span><span class="s">_</span><span class="si">#{</span><span class="nx">address</span><span class="p">.</span><span class="nx">port</span><span class="si">}</span><span class="s">&quot;</span>
-    <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">hset</span> <span class="nx">key</span><span class="p">,</span> <span class="s">&#39;host&#39;</span><span class="p">,</span> <span class="nx">address</span><span class="p">.</span><span class="nx">host</span><span class="p">,</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span>
-      <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">hset</span> <span class="nx">key</span><span class="p">,</span> <span class="s">&#39;port&#39;</span><span class="p">,</span> <span class="nx">address</span><span class="p">.</span><span class="nx">port</span><span class="p">,</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span>
-        <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">sadd</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@namespace</span><span class="si">}</span><span class="s">_addresses&quot;</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">data</span><span class="p">)</span> <span class="o">=&gt;</span>
-          <span class="nv">res = </span><span class="k">if</span> <span class="o">!</span><span class="nx">err</span> <span class="k">then</span> <span class="s">&#39;success&#39;</span> <span class="k">else</span> <span class="s">&quot;error: </span><span class="si">#{</span><span class="nx">err</span><span class="si">}</span><span class="s">&quot;</span>
-          <span class="nx">cb</span> <span class="nx">res</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>add an address from the list</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">remove: </span><span class="p">(</span><span class="nx">address</span><span class="p">,</span> <span class="nx">cb</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nv">key = </span><span class="s">&quot;</span><span class="si">#{</span><span class="nx">address</span><span class="p">.</span><span class="nx">host</span><span class="si">}</span><span class="s">_</span><span class="si">#{</span><span class="nx">address</span><span class="p">.</span><span class="nx">port</span><span class="si">}</span><span class="s">&quot;</span>
-    <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">srem</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@namespace</span><span class="si">}</span><span class="s">_addresses&quot;</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span>
-      <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">del</span> <span class="nx">key</span><span class="p">,</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span>
-        <span class="nx">cb</span> <span class="s">&#39;success&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>get the list</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">get: </span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nv">resultSet = </span><span class="p">[]</span>
-    <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">smembers</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@namespace</span><span class="si">}</span><span class="s">_addresses&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">members</span><span class="p">)</span> <span class="o">=&gt;</span>
-      <span class="k">if</span> <span class="nx">members</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="nx">member</span> <span class="k">in</span> <span class="nx">members</span>
-          <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">hgetall</span> <span class="nx">member</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">hash</span><span class="p">)</span> <span class="o">=&gt;</span>
-            <span class="nx">resultSet</span><span class="p">.</span><span class="nx">push</span> <span class="nx">hash</span> <span class="k">if</span> <span class="nx">hash</span><span class="o">?</span>
-            <span class="nx">cb</span> <span class="nx">resultSet</span> <span class="k">if</span> <span class="nx">members</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">member</span><span class="p">)</span> <span class="o">is</span> <span class="nx">members</span><span class="p">.</span><span class="nx">length</span><span class="o">-</span><span class="mi">1</span>
-      <span class="k">else</span>
-        <span class="nx">cb</span> <span class="nx">resultSet</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>get or set the target Address</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">exports.targetAddress =</span>
-  </pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Get the current address</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">get: </span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">hgetall</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@namespace</span><span class="si">}</span><span class="s">_targetaddress&quot;</span><span class="p">,</span> <span class="nf">(err, ta) -&gt;</span>
-     <span class="nx">cb</span> <span class="nx">ta</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Set the current address</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">set: </span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">cb</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">hset</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@namespace</span><span class="si">}</span><span class="s">_targetaddress&quot;</span><span class="p">,</span> <span class="s">&#39;host&#39;</span><span class="p">,</span> <span class="nx">value</span><span class="p">.</span><span class="nx">host</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">ta</span><span class="p">)</span> <span class="o">=&gt;</span>
-      <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">hset</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@namespace</span><span class="si">}</span><span class="s">_targetaddress&quot;</span><span class="p">,</span> <span class="s">&#39;port&#39;</span><span class="p">,</span> <span class="nx">value</span><span class="p">.</span><span class="nx">port</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">ta</span><span class="p">)</span> <span class="o">=&gt;</span>
-        <span class="nx">cb</span> <span class="nx">value</span>    </pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>the round robin target address index API</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">exports.targetAddressIndex = </span> 
-  </pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>get the target address index</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">get: </span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">get</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@namespace</span><span class="si">}</span><span class="s">_targetaddressindex&quot;</span><span class="p">,</span> <span class="nf">(err, tai) -&gt;</span>
-      <span class="nx">cb</span> <span class="nx">tai</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>increase the target address index by 1</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">increment: </span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">incr</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@namespace</span><span class="si">}</span><span class="s">_targetaddressindex&quot;</span><span class="p">,</span> <span class="nf">(err, tai) -&gt;</span>
-      <span class="nx">cb</span> <span class="s">&#39;success&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>set the target address index to 0</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">reset: </span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">set</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@namespace</span><span class="si">}</span><span class="s">_targetaddressindex&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nf">(err, tai) -&gt;</span>
-      <span class="nx">cb</span> <span class="s">&#39;success&#39;</span>
-  </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>the sticky sessions API    </p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">exports.stickySessions =</span>
-    </pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>get all the sticky sessions, or just one</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">get: </span><span class="p">(</span><span class="nx">keyOrCb</span><span class="p">,</span> <span class="nx">cb</span><span class="o">=</span><span class="kc">null</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="k">if</span> <span class="nx">cb</span> <span class="o">is</span> <span class="kc">null</span>
-      <span class="nv">resultSet = </span><span class="p">{}</span>
-      <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">smembers</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@namespace</span><span class="si">}</span><span class="s">_stickysessions&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">ss</span><span class="p">)</span> <span class="o">=&gt;</span>
-        <span class="k">if</span> <span class="nx">ss</span><span class="p">.</span><span class="nx">length</span> <span class="o">is</span> <span class="mi">0</span>
-          <span class="nx">keyOrCb</span> <span class="nx">resultSet</span>
-        <span class="k">else</span>
-          <span class="k">for</span> <span class="nx">item</span> <span class="k">in</span> <span class="nx">ss</span>
-            <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">hgetall</span> <span class="nx">item</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">hash</span><span class="p">)</span> <span class="o">=&gt;</span>
-              <span class="nx">resultSet</span><span class="p">[</span><span class="nx">item</span><span class="p">]</span> <span class="o">=</span> <span class="nx">hash</span>
-              <span class="k">if</span> <span class="nx">ss</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="o">is</span> <span class="nx">ss</span><span class="p">.</span><span class="nx">length</span><span class="o">-</span><span class="mi">1</span>
-                <span class="nx">keyOrCb</span> <span class="nx">resultSet</span>    
-    <span class="k">else</span>
-      <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">hgetall</span> <span class="nx">keyOrCb</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">hash</span><span class="p">)</span> <span class="o">=&gt;</span>
-        <span class="nv">hash = </span><span class="kc">undefined</span> <span class="k">if</span> <span class="nx">hash</span> <span class="o">is</span> <span class="kc">null</span>
-        <span class="nx">cb</span> <span class="nx">hash</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>set a sticky session by its key and value</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">set: </span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">hset</span> <span class="nx">key</span><span class="p">,</span> <span class="s">&#39;host&#39;</span><span class="p">,</span> <span class="nx">value</span><span class="p">.</span><span class="nx">host</span><span class="p">,</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span>
-      <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">hset</span> <span class="nx">key</span><span class="p">,</span> <span class="s">&#39;port&#39;</span><span class="p">,</span> <span class="nx">value</span><span class="p">.</span><span class="nx">port</span><span class="p">,</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span>
-        <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">sadd</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@namespace</span><span class="si">}</span><span class="s">_stickysessions&quot;</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">data</span><span class="p">)</span> <span class="o">=&gt;</span>
-          <span class="nx">response</span> <span class="s">&#39;success&#39;</span>
-  </pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>remove a sticky session</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="k">delete</span><span class="o">:</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">cb</span><span class="p">)</span> <span class="o">=&gt;</span>
-    <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">srem</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@namespace</span><span class="si">}</span><span class="s">_stickysessions&quot;</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span>
-      <span class="nx">@redisClient</span><span class="p">.</span><span class="nx">del</span> <span class="nx">key</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">ss</span><span class="p">)</span> <span class="o">=&gt;</span>
-        <span class="nx">cb</span> <span class="s">&#39;success&#39;</span>
+<!DOCTYPE html>
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+<html>
+<head>
+  <title>redis.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>redis.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>The addresses store API functions</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">exports</span>.addresses =</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>add an address to the list</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">add</span>: <span class="hljs-function"><span class="hljs-params">(address, cb)</span> =&gt;</span>
+    key = <span class="hljs-string">"<span class="hljs-subst">#{address.host}</span>_<span class="hljs-subst">#{address.port}</span>"</span>
+    <span class="hljs-property">@redisClient</span>.hset key, <span class="hljs-string">'host'</span>, address.host, <span class="hljs-function"><span class="hljs-params">(res)</span> =&gt;</span>
+      <span class="hljs-property">@redisClient</span>.hset key, <span class="hljs-string">'port'</span>, address.port, <span class="hljs-function"><span class="hljs-params">(res)</span> =&gt;</span>
+        <span class="hljs-property">@redisClient</span>.sadd <span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@namespace</span>}</span>_addresses"</span>, key, <span class="hljs-function"><span class="hljs-params">(err,data)</span> =&gt;</span>
+          res = <span class="hljs-keyword">if</span> !err <span class="hljs-keyword">then</span> <span class="hljs-string">'success'</span> <span class="hljs-keyword">else</span> <span class="hljs-string">"error: <span class="hljs-subst">#{err}</span>"</span>
+          cb res</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>add an address from the list</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">remove</span>: <span class="hljs-function"><span class="hljs-params">(address, cb)</span> =&gt;</span>
+    key = <span class="hljs-string">"<span class="hljs-subst">#{address.host}</span>_<span class="hljs-subst">#{address.port}</span>"</span>
+    <span class="hljs-property">@redisClient</span>.srem <span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@namespace</span>}</span>_addresses"</span>, key, <span class="hljs-function"><span class="hljs-params">(res)</span> =&gt;</span>
+      <span class="hljs-property">@redisClient</span>.del key, <span class="hljs-function"><span class="hljs-params">(res)</span> =&gt;</span>
+        cb <span class="hljs-string">'success'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>get the list</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">get</span>: <span class="hljs-function"><span class="hljs-params">(cb)</span> =&gt;</span>
+    resultSet = []
+    <span class="hljs-property">@redisClient</span>.smembers <span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@namespace</span>}</span>_addresses"</span>, <span class="hljs-function"><span class="hljs-params">(err,members)</span> =&gt;</span>
+      <span class="hljs-keyword">if</span> members.length &gt; <span class="hljs-number">0</span>
+        <span class="hljs-keyword">for</span> member <span class="hljs-keyword">in</span> members
+          <span class="hljs-property">@redisClient</span>.hgetall member, <span class="hljs-function"><span class="hljs-params">(err,hash)</span> =&gt;</span>
+            resultSet.push hash <span class="hljs-keyword">if</span> hash?
+            cb resultSet <span class="hljs-keyword">if</span> members.indexOf(member) <span class="hljs-keyword">is</span> members.length-<span class="hljs-number">1</span>
+      <span class="hljs-keyword">else</span>
+        cb resultSet</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>get or set the target Address</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">exports</span>.targetAddress =</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Get the current address</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">get</span>: <span class="hljs-function"><span class="hljs-params">(cb)</span> =&gt;</span>
+    <span class="hljs-property">@redisClient</span>.hgetall <span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@namespace</span>}</span>_targetaddress"</span>, <span class="hljs-function"><span class="hljs-params">(err, ta)</span> -&gt;</span>
+     cb ta</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Set the current address</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">set</span>: <span class="hljs-function"><span class="hljs-params">(value, cb)</span> =&gt;</span>
+    <span class="hljs-property">@redisClient</span>.hset <span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@namespace</span>}</span>_targetaddress"</span>, <span class="hljs-string">'host'</span>, value.host, <span class="hljs-function"><span class="hljs-params">(err, ta)</span> =&gt;</span>
+      <span class="hljs-property">@redisClient</span>.hset <span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@namespace</span>}</span>_targetaddress"</span>, <span class="hljs-string">'port'</span>, value.port, <span class="hljs-function"><span class="hljs-params">(err, ta)</span> =&gt;</span>
+        cb value</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>the round robin target address index API</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">exports</span>.targetAddressIndex =</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>get the target address index</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">get</span>: <span class="hljs-function"><span class="hljs-params">(cb)</span> =&gt;</span>
+    <span class="hljs-property">@redisClient</span>.get <span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@namespace</span>}</span>_targetaddressindex"</span>, <span class="hljs-function"><span class="hljs-params">(err, tai)</span> -&gt;</span>
+      cb tai</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>increase the target address index by 1</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">increment</span>: <span class="hljs-function"><span class="hljs-params">(cb)</span> =&gt;</span>
+    <span class="hljs-property">@redisClient</span>.incr <span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@namespace</span>}</span>_targetaddressindex"</span>, <span class="hljs-function"><span class="hljs-params">(err, tai)</span> -&gt;</span>
+      cb <span class="hljs-string">'success'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>set the target address index to 0</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">reset</span>: <span class="hljs-function"><span class="hljs-params">(cb)</span> =&gt;</span>
+    <span class="hljs-property">@redisClient</span>.set <span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@namespace</span>}</span>_targetaddressindex"</span>, <span class="hljs-number">0</span>, <span class="hljs-function"><span class="hljs-params">(err, tai)</span> -&gt;</span>
+      cb <span class="hljs-string">'success'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>the sticky sessions API    </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">exports</span>.stickySessions =</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>get all the sticky sessions, or just one</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">get</span>: <span class="hljs-function"><span class="hljs-params">(keyOrCb, cb=<span class="hljs-literal">null</span>)</span> =&gt;</span>
+    <span class="hljs-keyword">if</span> cb <span class="hljs-keyword">is</span> <span class="hljs-literal">null</span>
+      resultSet = {}
+      <span class="hljs-property">@redisClient</span>.smembers <span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@namespace</span>}</span>_stickysessions"</span>, <span class="hljs-function"><span class="hljs-params">(err, ss)</span> =&gt;</span>
+        <span class="hljs-keyword">if</span> ss.length <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+          keyOrCb resultSet
+        <span class="hljs-keyword">else</span>
+          <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> ss
+            <span class="hljs-property">@redisClient</span>.hgetall item, <span class="hljs-function"><span class="hljs-params">(err, hash)</span> =&gt;</span>
+              resultSet[item] = hash
+              <span class="hljs-keyword">if</span> ss.indexOf(item) <span class="hljs-keyword">is</span> ss.length-<span class="hljs-number">1</span>
+                keyOrCb resultSet    
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-property">@redisClient</span>.hgetall keyOrCb, <span class="hljs-function"><span class="hljs-params">(err, hash)</span> =&gt;</span>
+        hash = <span class="hljs-literal">undefined</span> <span class="hljs-keyword">if</span> hash <span class="hljs-keyword">is</span> <span class="hljs-literal">null</span>
+        cb hash</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>set a sticky session by its key and value</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">set</span>: <span class="hljs-function"><span class="hljs-params">(key, value, response)</span> =&gt;</span>
+    <span class="hljs-property">@redisClient</span>.hset key, <span class="hljs-string">'host'</span>, value.host, <span class="hljs-function"><span class="hljs-params">(res)</span> =&gt;</span>
+      <span class="hljs-property">@redisClient</span>.hset key, <span class="hljs-string">'port'</span>, value.port, <span class="hljs-function"><span class="hljs-params">(res)</span> =&gt;</span>
+        <span class="hljs-property">@redisClient</span>.sadd <span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@namespace</span>}</span>_stickysessions"</span>, key, <span class="hljs-function"><span class="hljs-params">(err,data)</span> =&gt;</span>
+          response <span class="hljs-string">'success'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>remove a sticky session</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">delete</span>: <span class="hljs-function"><span class="hljs-params">(key, cb)</span> =&gt;</span>
+    <span class="hljs-property">@redisClient</span>.srem <span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@namespace</span>}</span>_stickysessions"</span>, key, <span class="hljs-function"><span class="hljs-params">(res)</span> =&gt;</span>
+      <span class="hljs-property">@redisClient</span>.del key, <span class="hljs-function"><span class="hljs-params">(err, ss)</span> =&gt;</span>
+        cb <span class="hljs-string">'success'</span></pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

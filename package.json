@@ -7,23 +7,25 @@
     "type": "git",
     "url": "http://github.com/paulbjensen/satellite.git"
   },
-  "dependencies": {
-    "http-proxy":"0.8.7"
+  "dependencies" : {
+    "http-proxy" : "1.1.4"
   },
-  "devDependencies": {
-    "coffee-script":"1.6.3",
-    "mocha":"1.8.1",
-    "docco":"0.4.0",
-    "connect":"2.2.2"
+  "devDependencies" : {
+    "coffee-script" : "1.7.1",
+    "docco"         : "0.6.3",
+    "connect"       : "2.15.0",
+    "mocha"         : "1.18.2"
   },
-  "optionalDependencies": {
-    "redis":"0.8.4"
+  "optionalDependencies" : {
+    "redis" : "0.10.1"
   },
-  "main": "./lib/satellite",
-  "engines": {
-    "node": "0.8.X"
+  "main"    : "./lib/satellite",
+  "engines" : {
+    "node"  : "0.10.X"
   },
-  "scripts": {
-    "test":"NODE_ENV=test node_modules/.bin/mocha --compilers coffee:coffee-script test/**/*"
+  "scripts" : {
+    "build" : "node_modules/.bin/cake build",
+    "docs"  : "node_modules/.bin/cake docs",
+    "test"  : "NODE_ENV=test node_modules/.bin/mocha --compilers coffee:coffee-script/register test/satellite_test.coffee test/**/*"
   }
 }

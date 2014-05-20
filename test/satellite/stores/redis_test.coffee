@@ -1,12 +1,20 @@
+################
+# Dependencies #
+################
+
 assert    = require 'assert'
 connect   = require 'connect'
 satellite = require '../../../src/satellite'
+
+
 
 emptyHash = (hash) ->
   result = true
   for key, value of hash
     result = false
   result
+
+
 
 describe 'redis store', ->
 
@@ -17,12 +25,18 @@ describe 'redis store', ->
     satellite.useStore 'redis', {redisClient, namespace}, (status) ->
       # This is to clear out the list of addresses that
       # may have been populated by other test files
+
       satellite.store.addresses.get (addresses) ->
-        done() if addresses.length is 0
-        for address in addresses
-          satellite.store.addresses.remove address, (status) ->
-            satellite.store.addresses.get (addr) ->
-              done() if addr.length is 0 
+
+        if addresses.length is 0
+          done()
+        else
+
+          removeAddress = (addresses, address) ->
+            satellite.store.addresses.remove address, (status) ->
+              done() if addresses.indexOf(address) is addresses.length - 1
+
+          removeAddress addresses, address for address in addresses
 
   describe 'addresses', ->
 
@@ -79,12 +93,12 @@ describe 'redis store', ->
     describe 'get', ->
 
       it 'should return the current index of the targetAddress array', (done) ->
-        satellite.store.targetAddressIndex.reset (status) ->
-          satellite.store.targetAddressIndex.increment (status) ->
-            satellite.store.targetAddressIndex.increment (status) ->
-              satellite.store.targetAddressIndex.increment (status) ->
-                satellite.store.targetAddressIndex.increment (status) ->
-                  satellite.store.targetAddressIndex.increment (status) ->
+        satellite.store.targetAddressIndex.reset () ->
+          satellite.store.targetAddressIndex.increment () ->
+            satellite.store.targetAddressIndex.increment () ->
+              satellite.store.targetAddressIndex.increment () ->
+                satellite.store.targetAddressIndex.increment () ->
+                  satellite.store.targetAddressIndex.increment () ->
                     satellite.store.targetAddressIndex.get (number) -> 
                       assert.equal number, 5
                       done()
@@ -112,12 +126,13 @@ describe 'redis store', ->
       # This is to clear out the hash of stickySessions that
       # may have been populated by other test files
       satellite.store.stickySessions.get (stickySessions) ->
-        done() if emptyHash stickySessions
-        for key,value of stickySessions
-          satellite.store.stickySessions.delete key, (res) ->
-            done()
-      #       satellite.store.stickySessions.get (ss) ->
-      #         done() if emptyHash ss
+        if emptyHash stickySessions
+          done()
+        else
+          for key,value of stickySessions
+            satellite.store.stickySessions.delete key, (res) ->
+              satellite.store.stickySessions.get (ss) ->
+                done() if emptyHash ss
 
     describe 'get', ->
 

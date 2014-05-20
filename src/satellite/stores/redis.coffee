@@ -1,6 +1,6 @@
 # The addresses store API functions
 exports.addresses =
-  
+
   # add an address to the list
   add: (address, cb) =>
     key = "#{address.host}_#{address.port}"
@@ -19,19 +19,26 @@ exports.addresses =
 
   # get the list
   get: (cb) =>
-    resultSet = []
+
+
     @redisClient.smembers "#{@namespace}_addresses", (err,members) =>
       if members.length > 0
-        for member in members
+
+        resultSet = []
+
+        collectResults = (members, member) =>
           @redisClient.hgetall member, (err,hash) =>
             resultSet.push hash if hash?
             cb resultSet if members.indexOf(member) is members.length-1
+
+        collectResults members, member for member in members
+
       else
-        cb resultSet
+        cb members
 
 # get or set the target Address
 exports.targetAddress =
-  
+
   # Get the current address
   get: (cb) =>
     @redisClient.hgetall "#{@namespace}_targetaddress", (err, ta) ->
@@ -41,11 +48,11 @@ exports.targetAddress =
   set: (value, cb) =>
     @redisClient.hset "#{@namespace}_targetaddress", 'host', value.host, (err, ta) =>
       @redisClient.hset "#{@namespace}_targetaddress", 'port', value.port, (err, ta) =>
-        cb value    
+        cb value
 
 # the round robin target address index API
-exports.targetAddressIndex =  
-  
+exports.targetAddressIndex =
+
   # get the target address index
   get: (cb) =>
     @redisClient.get "#{@namespace}_targetaddressindex", (err, tai) ->
@@ -60,10 +67,10 @@ exports.targetAddressIndex =
   reset: (cb) =>
     @redisClient.set "#{@namespace}_targetaddressindex", 0, (err, tai) ->
       cb 'success'
-  
-# the sticky sessions API    
+
+# the sticky sessions API
 exports.stickySessions =
-    
+
   # get all the sticky sessions, or just one
   get: (keyOrCb, cb=null) =>
     if cb is null
@@ -72,11 +79,15 @@ exports.stickySessions =
         if ss.length is 0
           keyOrCb resultSet
         else
-          for item in ss
+
+          collectResults = (ss, item) =>
             @redisClient.hgetall item, (err, hash) =>
               resultSet[item] = hash
               if ss.indexOf(item) is ss.length-1
-                keyOrCb resultSet    
+                keyOrCb resultSet
+
+          collectResults ss, item for item in ss
+
     else
       @redisClient.hgetall keyOrCb, (err, hash) =>
         hash = undefined if hash is null
@@ -88,7 +99,7 @@ exports.stickySessions =
       @redisClient.hset key, 'port', value.port, (res) =>
         @redisClient.sadd "#{@namespace}_stickysessions", key, (err,data) =>
           response 'success'
-  
+
   # remove a sticky session
   delete: (key, cb) =>
     @redisClient.srem "#{@namespace}_stickysessions", key, (res) =>

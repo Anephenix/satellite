@@ -1,6 +1,12 @@
+################
+# Dependencies #
+################
+
 assert    = require 'assert'
 connect   = require 'connect'
 satellite = require '../../../src/satellite'
+
+
 
 emtpyHash = (hash) ->
   result = true
@@ -8,16 +14,21 @@ emtpyHash = (hash) ->
     result = false
   result
 
+
+
 describe 'default store', ->
 
   before (done) ->
     # This is to clear out the list of addresses that
     # may have been populated by other test files
     satellite.store.addresses.get (addresses) ->
-      for address in addresses
-        satellite.store.addresses.remove address, (status) ->
-          satellite.store.addresses.get (addr) ->
-            done() if addr.length is 0 
+      if addresses.length is 0
+        done()
+      else
+        for address in addresses
+          satellite.store.addresses.remove address, (status) ->
+            satellite.store.addresses.get (addr) ->
+              done() if addr.length is 0 
 
   describe 'addresses', ->
 
@@ -107,10 +118,13 @@ describe 'default store', ->
         # This is to clear out the hash of stickySessions that
         # may have been populated by other test files
         satellite.store.stickySessions.get (stickySessions) ->
-          for key,value of stickySessions
-            satellite.store.stickySessions.delete key, (res) ->
-              satellite.store.stickySessions.get (ss) ->
-                done() if emtpyHash ss
+          if Object.keys(stickySessions).length is 0
+            done()
+          else
+            for key,value of stickySessions
+              satellite.store.stickySessions.delete key, (res) ->
+                satellite.store.stickySessions.get (ss) ->
+                  done() if emtpyHash ss
 
       describe 'get', ->
 

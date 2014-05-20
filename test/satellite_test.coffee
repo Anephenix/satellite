@@ -1,18 +1,28 @@
+################
+# Dependencies #
+################
+
 assert    = require 'assert'
 connect   = require 'connect'
 satellite = require '../src/satellite'
+
+
 
 describe 'Satellite', ->
 
   describe 'addresses', ->
 
     before (done) ->
+      console.log "Running #{__filename}"
       @address = host: '192.168.0.1', port: 3000
       done()
 
     describe 'addAddress', ->
 
+
+
       it 'should append an address to an existing list', (done) ->
+
         satellite.addAddress @address, (status) =>
           satellite.store.addresses.get (addresses) =>
             assert.deepEqual [@address], addresses
