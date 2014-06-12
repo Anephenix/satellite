@@ -125,4 +125,4 @@ License
 
 MIT
 
-&copy 2013 Anephenix Ltd.
+&copy; 2014 Anephenix Ltd.
